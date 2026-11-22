@@ -207,7 +207,7 @@ public final class MainActivity extends Activity {
         }
 
         LinearLayout nav = card(page);
-        addHeading(nav, "メニュー / カーソル", "RCKY方式（LC-60XD35では未検証）");
+        addHeading(nav, "カーソル（試験中）", "RCKY方式は機種依存。ホーム・メニューはERRのため非表示");
         LinearLayout navUp = buttonRow();
         addButton(navUp, "↑", false, () -> sendControl("上", "RCKY41"));
         nav.addView(navUp);
@@ -220,15 +220,9 @@ public final class MainActivity extends Activity {
         addButton(navDown, "↓", false, () -> sendControl("下", "RCKY42"));
         nav.addView(navDown);
         LinearLayout navActions = buttonRow();
-        addButton(navActions, "メニュー", false, () -> sendControl("メニュー", "RCKY38"));
         addButton(navActions, "戻る", false, () -> sendControl("戻る", "RCKY45"));
         addButton(navActions, "終了", false, () -> sendControl("終了", "RCKY46"));
         nav.addView(navActions);
-        if (!KIDS_MODE) {
-            LinearLayout homeRow = buttonRow();
-            addButton(homeRow, "ホーム（試験）", false, () -> sendControl("ホーム（試験）", "RCKY39"));
-            nav.addView(homeRow);
-        }
 
         TextView footer = makeText("TCP 10002 · AQUOS独自IP制御  |  テレビと同じLANに接続してください。", 12, SECONDARY, false);
         footer.setGravity(Gravity.CENTER_HORIZONTAL);
