@@ -49,6 +49,7 @@ public final class MainActivity extends Activity {
     private SharedPreferences preferences;
     private TextView endpointLabel;
     private TextView statusLabel;
+    private TextView debugResultLabel;
     private TextView volumeLabel;
     private SeekBar volumeSlider;
     private volatile int knownVolume = -1;
@@ -197,6 +198,12 @@ public final class MainActivity extends Activity {
         addButton(customRow, "送信", true,
                 () -> sendControl("手動送信", customCommand.getText().toString()));
         debug.addView(customRow);
+        debugResultLabel = makeText("結果：未送信", 15, SECONDARY, true);
+        debugResultLabel.setPadding(dp(12), dp(12), dp(12), dp(12));
+        debugResultLabel.setBackground(rounded(BUTTON, OUTLINE, 10));
+        LinearLayout.LayoutParams debugResultLp = new LinearLayout.LayoutParams(-1, -2);
+        debugResultLp.topMargin = dp(12);
+        debug.addView(debugResultLabel, debugResultLp);
         }
 
         LinearLayout nav = card(page);
@@ -318,6 +325,11 @@ public final class MainActivity extends Activity {
     private void status(String message, boolean success) {
         statusLabel.setText(message);
         statusLabel.setTextColor(success ? ACCENT : WARNING);
+        // Show manual command feedback next to its Send button, without scrolling.
+        if (debugResultLabel != null && message.startsWith("手動送信")) {
+            debugResultLabel.setText(message.replaceFirst("^手動送信", "結果"));
+            debugResultLabel.setTextColor(success ? ACCENT : WARNING);
+        }
     }
 
     private void ui(Runnable action) {
@@ -335,7 +347,8 @@ public final class MainActivity extends Activity {
                 throw new IllegalArgumentException("Kids版ではこの操作を許可していません");
             }
         } catch (IllegalArgumentException invalid) {
-            toast(invalid.getMessage());
+            if ("手動送信".equals(label)) status(label + "：入力エラー（" + invalid.getMessage() + "）", false);
+            else toast(invalid.getMessage());
             return;
         }
         status(label + " を送信中…", false);
