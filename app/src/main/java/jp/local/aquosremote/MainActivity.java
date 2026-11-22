@@ -92,29 +92,13 @@ public final class MainActivity extends Activity {
         TextView subtitle = makeText(KIDS_MODE ? "音量は最大25 · このアプリでの操作を制限" : "LC-60XD35 · 家庭内LANから直接操作", 13, SECONDARY, false);
         LinearLayout.LayoutParams subtitleLp = new LinearLayout.LayoutParams(-1, -2);
         subtitleLp.topMargin = dp(7);
-        subtitleLp.bottomMargin = dp(21);
+        subtitleLp.bottomMargin = dp(9);
         page.addView(subtitle, subtitleLp);
 
-        LinearLayout connection = card(page);
-        addHeading(connection, "接続", "テレビへのTCP接続を確認");
-        endpointLabel = makeText(endpointText(), 16, WHITE, true);
-        connection.addView(endpointLabel);
-        statusLabel = makeText("未確認", 13, SECONDARY, false);
+        statusLabel = makeText("接続を確認中…", 13, SECONDARY, false);
         LinearLayout.LayoutParams statusLp = new LinearLayout.LayoutParams(-1, -2);
-        statusLp.topMargin = dp(7);
-        statusLp.bottomMargin = dp(12);
-        connection.addView(statusLabel, statusLp);
-        LinearLayout connectButtons = buttonRow();
-        addButton(connectButtons, "接続・音量確認", true, this::refreshVolume);
-        addButton(connectButtons, "IP / ポート", false, this::showSettings);
-        connection.addView(connectButtons);
-
-        LinearLayout power = card(page);
-        addHeading(power, "電源", "機種によって電源オンは利用できません");
-        LinearLayout powerButtons = buttonRow();
-        addButton(powerButtons, "⏻  ON", true, () -> sendControl("電源オン", "POWR1"));
-        addButton(powerButtons, "⏻  OFF", false, () -> confirmPowerOff());
-        power.addView(powerButtons);
+        statusLp.bottomMargin = dp(14);
+        page.addView(statusLabel, statusLp);
 
         LinearLayout volume = card(page);
         addHeading(volume, "音量", KIDS_MODE ? "Kids版：送信可能な音量は0～25" : "スライダー操作は指を離した時に送信");
@@ -154,13 +138,6 @@ public final class MainActivity extends Activity {
         addButton(muteRow, "消音解除", false, () -> sendControl("消音解除", "MUTE2"));
         volume.addView(muteRow);
 
-        LinearLayout channel = card(page);
-        addHeading(channel, "チャンネル", "テレビ放送の選局");
-        LinearLayout channelRow = buttonRow();
-        addButton(channelRow, "CH −", false, () -> sendControl("チャンネル−", "CHDW"));
-        addButton(channelRow, "CH ＋", false, () -> sendControl("チャンネル＋", "CHUP"));
-        channel.addView(channelRow);
-
         LinearLayout input = card(page);
         addHeading(input, "入力切替", "入力番号の対応はテレビの機種・設定によります");
         LinearLayout inputRow = buttonRow();
@@ -179,8 +156,41 @@ public final class MainActivity extends Activity {
         addButton(inputRow3, "入力 5", false, () -> sendControl("入力 5", "IAVD5"));
         input.addView(inputRow3);
 
+        LinearLayout channel = card(page);
+        addHeading(channel, "チャンネル", "テレビ放送の選局");
+        LinearLayout channelRow = buttonRow();
+        addButton(channelRow, "CH −", false, () -> sendControl("チャンネル−", "CHDW"));
+        addButton(channelRow, "CH ＋", false, () -> sendControl("チャンネル＋", "CHUP"));
+        channel.addView(channelRow);
+
+        LinearLayout power = card(page);
+        addHeading(power, "電源", "機種によって電源オンは利用できません");
+        LinearLayout powerButtons = buttonRow();
+        addButton(powerButtons, "⏻  ON", true, () -> sendControl("電源オン", "POWR1"));
+        addButton(powerButtons, "⏻  OFF", false, () -> confirmPowerOff());
+        power.addView(powerButtons);
+
+        LinearLayout maintenanceContent = new LinearLayout(this);
+        maintenanceContent.setOrientation(LinearLayout.VERTICAL);
+        maintenanceContent.setVisibility(View.GONE);
+        LinearLayout maintenanceToggle = buttonRow();
+        addButton(maintenanceToggle, "⚙ 接続設定・試験（開く / 閉じる）", false,
+                () -> maintenanceContent.setVisibility(
+                        maintenanceContent.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE));
+        page.addView(maintenanceToggle);
+        page.addView(maintenanceContent);
+
+        LinearLayout connection = card(maintenanceContent);
+        addHeading(connection, "接続", "テレビへのTCP接続を確認");
+        endpointLabel = makeText(endpointText(), 16, WHITE, true);
+        connection.addView(endpointLabel);
+        LinearLayout connectButtons = buttonRow();
+        addButton(connectButtons, "接続・音量確認", true, this::refreshVolume);
+        addButton(connectButtons, "IP / ポート", false, this::showSettings);
+        connection.addView(connectButtons);
+
         if (!KIDS_MODE) {
-        LinearLayout debug = card(page);
+        LinearLayout debug = card(maintenanceContent);
         addHeading(debug, "コマンド試験", "機種依存のコマンドも直接送信できる");
         TextView help = makeText("例：VOLM20 / VOLM???? / POWR0。8文字に空白パディングし、末尾にCRを付けます。", 13, SECONDARY, false);
         debug.addView(help);
