@@ -206,24 +206,6 @@ public final class MainActivity extends Activity {
         debug.addView(debugResultLabel, debugResultLp);
         }
 
-        LinearLayout nav = card(page);
-        addHeading(nav, "カーソル（試験中）", "RCKY方式は機種依存。ホーム・メニューはERRのため非表示");
-        LinearLayout navUp = buttonRow();
-        addButton(navUp, "↑", false, () -> sendControl("上", "RCKY41"));
-        nav.addView(navUp);
-        LinearLayout navMiddle = buttonRow();
-        addButton(navMiddle, "←", false, () -> sendControl("左", "RCKY43"));
-        addButton(navMiddle, "決定", true, () -> sendControl("決定", "RCKY40"));
-        addButton(navMiddle, "→", false, () -> sendControl("右", "RCKY44"));
-        nav.addView(navMiddle);
-        LinearLayout navDown = buttonRow();
-        addButton(navDown, "↓", false, () -> sendControl("下", "RCKY42"));
-        nav.addView(navDown);
-        LinearLayout navActions = buttonRow();
-        addButton(navActions, "戻る", false, () -> sendControl("戻る", "RCKY45"));
-        addButton(navActions, "終了", false, () -> sendControl("終了", "RCKY46"));
-        nav.addView(navActions);
-
         TextView footer = makeText("TCP 10002 · AQUOS独自IP制御  |  テレビと同じLANに接続してください。", 12, SECONDARY, false);
         footer.setGravity(Gravity.CENTER_HORIZONTAL);
         footer.setPadding(dp(4), dp(5), dp(4), dp(5));
