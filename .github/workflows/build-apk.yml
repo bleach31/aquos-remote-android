@@ -1,0 +1,68 @@
+name: Build Android APKs
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android platform
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Run protocol and Kids-limit tests
+        run: bash scripts/test-protocol.sh
+
+      - name: Build both APKs
+        run: gradle --no-daemon :app:assembleParentDebug :app:assembleKidsDebug
+
+      - name: Prepare APK files
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/apk/parent/debug/app-parent-debug.apk dist/aquos-remote-parent.apk
+          cp app/build/outputs/apk/kids/debug/app-kids-debug.apk dist/aquos-remote-kids-max25.apk
+
+      - name: Upload APKs for manual installation
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquos-remote-apks
+          path: dist/*.apk
+          if-no-files-found: error
+          retention-days: 60
+
+      - name: Publish tagged GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.apk
+          generate_release_notes: true
+          body: |
+            AQUOS LAN Remote: 通常版と音量最大25のKids版。
+            APKはデバッグ署名です。別のWorkflow実行で生成したAPKへの上書き更新では署名不一致の可能性があります。
+            TV側や純正リモコンの音量を強制制限するものではありません。
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # The tag build needs permission to create a release.

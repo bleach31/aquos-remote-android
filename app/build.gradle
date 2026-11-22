@@ -1,0 +1,41 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'jp.local.aquosremote'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'jp.local.aquosremote'
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    flavorDimensions += 'audience'
+    productFlavors {
+        parent {
+            dimension 'audience'
+            applicationIdSuffix '.parent'
+            resValue 'string', 'app_name', 'AQUOS リモコン'
+            buildConfigField 'boolean', 'KIDS_MODE', 'false'
+        }
+        kids {
+            dimension 'audience'
+            applicationIdSuffix '.kids'
+            resValue 'string', 'app_name', 'AQUOS リモコン Kids'
+            buildConfigField 'boolean', 'KIDS_MODE', 'true'
+        }
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
