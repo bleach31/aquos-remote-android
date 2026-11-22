@@ -15,7 +15,7 @@ public final class KidCommandPolicy {
             return level >= 0 && level <= 25;
         }
         if (command.equals("POWR0") || command.equals("POWR1")
-                || command.equals("MUTE1") || command.equals("MUTE2")
+                || command.equals("MUTE0") || command.equals("MUTE1") || command.equals("MUTE2")
                 || command.equals("CHUP") || command.equals("CHDW")
                 || command.equals("ITGD") || command.equals("ITVD")) return true;
         if (command.matches("IAVD[1-5]")) return true;

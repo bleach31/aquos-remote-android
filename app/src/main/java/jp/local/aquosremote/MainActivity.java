@@ -134,8 +134,9 @@ public final class MainActivity extends Activity {
         addButton(adjustRow, "+5", false, () -> changeVolume(+5));
         volume.addView(adjustRow);
         LinearLayout muteRow = buttonRow();
-        addButton(muteRow, "消音", false, () -> sendControl("消音", "MUTE1"));
-        addButton(muteRow, "消音解除", false, () -> sendControl("消音解除", "MUTE2"));
+        // MUTE0 is the TV-side toggle. Avoid showing an unsynchronized on/off state:
+        // the physical remote may independently change the mute state.
+        addButton(muteRow, "消音 ON / OFF（切替）", false, () -> sendControl("消音切替", "MUTE0"));
         volume.addView(muteRow);
 
         LinearLayout input = card(page);
@@ -166,15 +167,15 @@ public final class MainActivity extends Activity {
         LinearLayout power = card(page);
         addHeading(power, "電源", "機種によって電源オンは利用できません");
         LinearLayout powerButtons = buttonRow();
-        addButton(powerButtons, "⏻  ON", true, () -> sendControl("電源オン", "POWR1"));
-        addButton(powerButtons, "⏻  OFF", false, () -> confirmPowerOff());
+        addButton(powerButtons, "電源 ON", true, () -> sendControl("電源オン", "POWR1"));
+        addButton(powerButtons, "電源 OFF", false, () -> confirmPowerOff());
         power.addView(powerButtons);
 
         LinearLayout maintenanceContent = new LinearLayout(this);
         maintenanceContent.setOrientation(LinearLayout.VERTICAL);
         maintenanceContent.setVisibility(View.GONE);
         LinearLayout maintenanceToggle = buttonRow();
-        addButton(maintenanceToggle, "⚙ 接続設定・試験（開く / 閉じる）", false,
+        addButton(maintenanceToggle, "設定・試験（開く / 閉じる）", false,
                 () -> maintenanceContent.setVisibility(
                         maintenanceContent.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE));
         page.addView(maintenanceToggle);

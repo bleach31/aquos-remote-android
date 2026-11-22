@@ -25,6 +25,8 @@ public final class ProtocolSmokeTest {
         } catch (IllegalArgumentException expected) { }
 
         check(KidCommandPolicy.allowed("VOLM25"), "kid allows 25");
+        check(KidCommandPolicy.allowed("MUTE0"), "kid allows device-side mute toggle");
+        check(Arrays.equals(AquosProtocol.frame("MUTE0"), "MUTE0   \r".getBytes(StandardCharsets.US_ASCII)), "MUTE0 framing");
         check(!KidCommandPolicy.allowed("VOLM26"), "kid rejects 26");
         check(!KidCommandPolicy.allowed("VOLM99"), "kid rejects 99");
         check(!KidCommandPolicy.allowed("VOLM????"), "kid rejects raw query");
