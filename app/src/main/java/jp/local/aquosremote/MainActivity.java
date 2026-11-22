@@ -42,7 +42,7 @@ public final class MainActivity extends Activity {
     private static final int WARNING = Color.rgb(250, 185, 101);
     private static final int DANGER = Color.rgb(225, 116, 117);
     private static final boolean KIDS_MODE = BuildConfig.KIDS_MODE;
-    private static final int MAX_VOLUME = KIDS_MODE ? 25 : 60;
+    private static final int MAX_VOLUME = KIDS_MODE ? 25 : 40;
 
     private final ExecutorService networkQueue = Executors.newSingleThreadExecutor();
     private final Handler uiHandler = new Handler(Looper.getMainLooper());
@@ -101,7 +101,7 @@ public final class MainActivity extends Activity {
         page.addView(statusLabel, statusLp);
 
         LinearLayout volume = card(page);
-        addHeading(volume, "音量", KIDS_MODE ? "Kids版：送信可能な音量は0～25" : "スライダー操作は指を離した時に送信");
+        addHeading(volume, "音量", KIDS_MODE ? "Kids版：0～25" : "0～40 · スライダーは指を離した時に送信");
         volumeLabel = makeText("現在の音量：未取得", 23, WHITE, true);
         volume.addView(volumeLabel);
         volumeSlider = new SeekBar(this);
